@@ -12,8 +12,13 @@ public static class Arrays
         // Remember: Using comments in your program, write down your process for solving this problem
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
+        double[] multiples = new double[length];
+        for (int i = 0; i < length; i++)
+        {
+            multiples[i] = number * (i + 1);
+        }
 
-        return []; // replace this return statement with your own
+        return multiples; // replace this return statement with your own
     }
 
     /// <summary>
@@ -29,5 +34,31 @@ public static class Arrays
         // Remember: Using comments in your program, write down your process for solving this problem
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
+
+        // if the list is empty, return an empty list.
+        if (data.Count == 0)
+        {
+            return;
+        }
+
+        // if amount is greater than the size of the list wrapping around the index number back to zero
+        amount = amount % data.Count;
+
+        // if amount is 0, no rotation is needed, return the original list.
+        if (amount == 0)
+        {
+            return;
+        }
+
+        // Slice or Get the last 'amount' elements of the list.
+        List<int> lastList = data.GetRange(data.Count - amount, amount);
+
+        // Slice or Get the first part of the list.
+        List<int> firstList = data.GetRange(0, data.Count - amount);
+
+        // Concatenate the two lists
+        data.Clear();
+        data.AddRange(lastList);
+        data.AddRange(firstList);
     }
 }
