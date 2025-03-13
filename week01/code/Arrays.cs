@@ -12,9 +12,16 @@ public static class Arrays
         // Remember: Using comments in your program, write down your process for solving this problem
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
+
+         // Create an array multiples[] to store the multiples of numbers with the specified length.
         double[] multiples = new double[length];
+
+        // Loop through the multiples[] array 
+        // fill it with multiples of the given number.
         for (int i = 0; i < length; i++)
         {
+            // For each index 'i', multiply the number by (i + 1) to get the multiple.
+            // i + 1 ensures that the first multiple is the number itself.
             multiples[i] = number * (i + 1);
         }
 
