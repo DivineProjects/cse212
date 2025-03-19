@@ -10,16 +10,20 @@ public class PersonQueue
     /// <summary>
     /// Add a person to the queue
     /// </summary>
-    /// <param name="person">The person to add</param>
+    // / <param name="person">The person to add</param>
     public void Enqueue(Person person)
     {
-        _queue.Insert(0, person);
+        // _queue.Insert(0, person);
+        _queue.Add(person);
+        // Console.WriteLine($"Added {person} to the {_queue.ToString()}");
     }
 
     public Person Dequeue()
     {
         var person = _queue[0];
         _queue.RemoveAt(0);
+        // Console.WriteLine($"Premoved {person} to the {_queue.ToString()}");
+
         return person;
     }
 

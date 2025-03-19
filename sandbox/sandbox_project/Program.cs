@@ -1,59 +1,142 @@
 using System;
+using System.Collections.Generic;
+/// <summary>
+/// A basic implementation of a Queue
+/// </summary>
+public class PersonQueue
+{
+    private readonly List<Person> _queue = new();
+
+    public int Length => _queue.Count;
+
+    /// <summary>
+    /// Add a person to the queue
+    /// </summary>
+    // / <param name="person">The person to add</param>
+    public void Enqueue(Person person)
+    {
+        // _queue.Insert(0, person);
+        _queue.Add(person);
+    }
+
+    public Person Dequeue()
+    {
+        var person = _queue[0];
+        _queue.RemoveAt(0);
+        return person;
+    }
+
+    public bool IsEmpty()
+    {
+        return Length == 0;
+    }
+
+    public override string ToString()
+    {
+        return $"[{string.Join(", ", _queue)}]";
+    }
+}
+
+public class Person
+{
+    public readonly string Name;
+    public int Turns { get; set; }
+
+    internal Person(string name, int turns)
+    {
+        Name = name;
+        Turns = turns;
+    }
+
+    public override string ToString()
+    {
+        return Turns <= 0 ? $"({Name}:Forever)" : $"({Name}:{Turns})";
+    }
+}
+
+public class TakingTurnsQueue
+{
+    private readonly PersonQueue _people = new();
+
+    public int Length => _people.Length;
+
+    /// <summary>
+    /// Add new people to the queue with a name and number of turns
+    /// </summary>
+    // / <param name="name">Name of the person</param>
+    // / <param name="turns">Number of turns remaining</param>
+    public void AddPerson(string name, int turns)
+    {
+        var person = new Person(name, turns);
+        _people.Enqueue(person);
+    }
+
+    /// <summary>
+    /// Get the next person in the queue and return them. The person should
+    /// go to the back of the queue again unless the turns variable shows that they 
+    /// have no more turns left.  Note that a turns value of 0 or less means the 
+    /// person has an infinite number of turns.  An error exception is thrown 
+    /// if the queue is empty.
+    /// </summary>
+    public Person GetNextPerson()
+    {
+        if (_people.IsEmpty())
+        {
+            throw new InvalidOperationException("No one in the queue.");
+        }
+        else
+        {
+            Person person = _people.Dequeue();
+            if (person.Turns > 1)
+            {
+                person.Turns -= 1;
+                _people.Enqueue(person);
+            } else if (person.Turns <= 0)
+            {
+                _people.Enqueue(person);
+            }
+            
+            // Console.WriteLine(person.ToString());
+            return person;
+        }
+    }
+
+    public override string ToString()
+    {
+        return _people.ToString();
+    }
+}
+
 
 
 public class Program
 {
-    static List<int> RotateListRight(List<int> data, int n)
-    {
-        // Edge case: if the list is empty, return an empty list.
-        if (data.Count == 0)
-        {
-            return new List<int>();
-        }
-
-        // Normalize n if it's greater than the size of the list.
-        n = n % data.Count;
-
-        // Edge case: if n is 0, no rotation is needed, return the original list.
-        if (n == 0 || data.Count == n)
-        {
-            return new List<int>(data);
-        }
-
-        // Step 1: Get the last 'n' elements of the list (these will be moved to the front).
-        List<int> rightPart = data.GetRange(data.Count - n, n);
-
-        // Step 2: Get the first part of the list (elements that will follow the right part).
-        List<int> leftPart = data.GetRange(0, data.Count - n);
-
-        // Step 3: Concatenate the two parts: right part + left part.
-        List<int> rotatedList = new List<int>();
-        rotatedList.AddRange(rightPart);
-        rotatedList.AddRange(leftPart);
-        // Step 4: Return the rotated list.
-        return rotatedList;
-    }
-    // private static void RotateListRight(List<int> data, int amount)
-    // {
-    //     List<int> rotatedData = RotateListRight(data, amount);
-    //     foreach (var item in rotatedData)
-    //     {
-    //         Console.Write(item + " ");
-    //     }
-    // }
     static void Main(string[] args)
     {
         // This project is here for you to use as a "Sandbox" to play around
         // with any code or ideas you have that do not directly apply to
         // one of your projects.
         
-        List<int> data = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        int n = 0;
+        var players = new TakingTurnsQueue();
 
-        List<int> rotatedData = RotateListRight(data, n);
-        foreach (var item in rotatedData)
+        try
         {
-            Console.Write(item + " ");
+            players.GetNextPerson();
+            // Assert.Fail("Exception should have been thrown.");
+        }
+        catch (InvalidOperationException e)
+        {
+            Console.WriteLine($"No one in the queue.== {e.Message}");
+        }
+     
+        catch (Exception e)
+        {
+            Console.WriteLine(
+                 string.Format($"Unexpected exception of type {0} caught: {1}",
+                                e.GetType(), e.Message)
+            );
         }
     }
+        
+    
 }

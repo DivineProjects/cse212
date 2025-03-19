@@ -18,7 +18,7 @@ public class TakingTurnsQueueTests
         var tim = new Person("Tim", 5);
         var sue = new Person("Sue", 3);
 
-        Person[] expectedResult = [bob, tim, sue, bob, tim, sue, tim, sue, tim, tim];
+        Person[] expectedResult = { bob, tim, sue, bob, tim, sue, tim, sue, tim, tim };
 
         var players = new TakingTurnsQueue();
         players.AddPerson(bob.Name, bob.Turns);
@@ -59,6 +59,7 @@ public class TakingTurnsQueueTests
         players.AddPerson(sue.Name, sue.Turns);
 
         int i = 0;
+
         for (; i < 5; i++)
         {
             var person = players.GetNextPerson();
@@ -157,14 +158,10 @@ public class TakingTurnsQueueTests
         {
             Assert.AreEqual("No one in the queue.", e.Message);
         }
-        catch (AssertFailedException)
-        {
-            throw;
-        }
         catch (Exception e)
         {
             Assert.Fail(
-                 string.Format("Unexpected exception of type {0} caught: {1}",
+                 string.Format($"Unexpected exception of type {0} caught: {1}",
                                 e.GetType(), e.Message)
             );
         }
