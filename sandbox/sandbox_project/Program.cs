@@ -1,112 +1,5 @@
 using System;
 using System.Collections.Generic;
-/// <summary>
-/// A basic implementation of a Queue
-/// </summary>
-public class PersonQueue
-{
-    private readonly List<Person> _queue = new();
-
-    public int Length => _queue.Count;
-
-    /// <summary>
-    /// Add a person to the queue
-    /// </summary>
-    // / <param name="person">The person to add</param>
-    public void Enqueue(Person person)
-    {
-        // _queue.Insert(0, person);
-        _queue.Add(person);
-    }
-
-    public Person Dequeue()
-    {
-        var person = _queue[0];
-        _queue.RemoveAt(0);
-        return person;
-    }
-
-    public bool IsEmpty()
-    {
-        return Length == 0;
-    }
-
-    public override string ToString()
-    {
-        return $"[{string.Join(", ", _queue)}]";
-    }
-}
-
-public class Person
-{
-    public readonly string Name;
-    public int Turns { get; set; }
-
-    internal Person(string name, int turns)
-    {
-        Name = name;
-        Turns = turns;
-    }
-
-    public override string ToString()
-    {
-        return Turns <= 0 ? $"({Name}:Forever)" : $"({Name}:{Turns})";
-    }
-}
-
-public class TakingTurnsQueue
-{
-    private readonly PersonQueue _people = new();
-
-    public int Length => _people.Length;
-
-    /// <summary>
-    /// Add new people to the queue with a name and number of turns
-    /// </summary>
-    // / <param name="name">Name of the person</param>
-    // / <param name="turns">Number of turns remaining</param>
-    public void AddPerson(string name, int turns)
-    {
-        var person = new Person(name, turns);
-        _people.Enqueue(person);
-    }
-
-    /// <summary>
-    /// Get the next person in the queue and return them. The person should
-    /// go to the back of the queue again unless the turns variable shows that they 
-    /// have no more turns left.  Note that a turns value of 0 or less means the 
-    /// person has an infinite number of turns.  An error exception is thrown 
-    /// if the queue is empty.
-    /// </summary>
-    public Person GetNextPerson()
-    {
-        if (_people.IsEmpty())
-        {
-            throw new InvalidOperationException("No one in the queue.");
-        }
-        else
-        {
-            Person person = _people.Dequeue();
-            if (person.Turns > 1)
-            {
-                person.Turns -= 1;
-                _people.Enqueue(person);
-            } else if (person.Turns <= 0)
-            {
-                _people.Enqueue(person);
-            }
-            
-            // Console.WriteLine(person.ToString());
-            return person;
-        }
-    }
-
-    public override string ToString()
-    {
-        return _people.ToString();
-    }
-}
-
 
 
 public class Program
@@ -117,26 +10,42 @@ public class Program
         // with any code or ideas you have that do not directly apply to
         // one of your projects.
         
-        var players = new TakingTurnsQueue();
+        int[] data = [
+            50, 9, 24, 100, 7, 75, 93, 24, 17, 16, 97, 6, 18, 81, 48, 37, 49, 33, 60, 3, 99, 32, 88, 29, 65, 20, 35, 33,
+            15, 81, 31, 93, 17, 5, 5, 79, 12, 91, 18, 31, 12, 94, 39, 98, 10, 72, 20, 79, 100, 27, 46, 28, 50, 1, 7, 14,
+            78, 100, 55, 26, 48, 33, 96, 77, 69, 8, 33, 36, 42, 98, 42, 32, 49, 65, 1, 82, 30, 74, 73, 89, 23, 76, 25,
+            4, 76, 7, 72, 86, 71, 29, 18, 98, 84, 20, 24, 18, 11, 33, 39, 96, 1, 97, 65, 41, 62, 48, 59, 51, 17, 89, 6,
+            29, 98, 49, 37, 72, 63, 49, 12, 79, 27, 23, 23, 13, 90, 47, 11, 66, 41, 97, 2, 60, 1, 21, 38, 100, 98, 2,
+            18, 75, 86, 52, 63, 58, 26, 80, 62, 82, 63, 94, 33, 76, 7, 11, 49, 2, 34, 3, 10, 27, 71, 60, 4, 94, 100, 95,
+            46, 15, 21, 40, 35, 98, 89, 25, 46, 54, 24, 75, 92, 69, 37, 63, 71, 70, 90, 91, 82, 81, 4, 10, 82, 1, 32, 8,
+            13, 47, 8, 52, 30, 54, 4, 79, 7, 90, 81, 33, 65, 89, 84, 83, 46, 95, 82, 6, 93, 5, 22, 67, 8, 79, 3, 55, 79,
+            6, 54, 10, 22, 16, 40, 67, 50, 58, 37, 35, 7, 44, 10, 31, 45, 93, 12, 55, 67, 48, 32, 43, 57, 58, 37, 76,
+            85, 47, 80, 18, 32, 59, 98, 92, 53, 98, 29, 61, 82, 42, 78, 97, 23, 94, 38, 20, 73, 11, 99, 94, 92, 82, 82,
+            65
+        ];
+        // Using HashSet to track duplicates
+        var set = new HashSet<int>();
+        int duplicatesCount = 0;
+         foreach (var num in data)
+        {
+            // If the number is already in the set, it's a duplicate
+            if (!set.Add(num))
+            {
+                duplicatesCount++;
+            }
+        }
 
-        try
-        {
-            players.GetNextPerson();
-            // Assert.Fail("Exception should have been thrown.");
-        }
-        catch (InvalidOperationException e)
-        {
-            Console.WriteLine($"No one in the queue.== {e.Message}");
-        }
-     
-        catch (Exception e)
-        {
-            Console.WriteLine(
-                 string.Format($"Unexpected exception of type {0} caught: {1}",
-                                e.GetType(), e.Message)
-            );
-        }
-    }
-        
+        Console.WriteLine(set.Count);
+        Console.WriteLine($"Number of items in the collection: {data.Length}");
+        Console.WriteLine($"Number of duplicates : {duplicatesCount}");
+    }   
+
     
 }
+
+
+// public static int CountDuplicates(int[] data)
+// {
+//     // Add code here.
+//     return 0;
+// }
