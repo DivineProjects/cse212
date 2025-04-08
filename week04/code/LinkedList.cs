@@ -77,15 +77,21 @@ public class LinkedList : IEnumerable<int>
     public void RemoveTail()
     {
         // TODO Problem 2
-        if (_tail == _head)
+        
+        if (_tail == null) 
+        {return;} 
+
+        if (_head == _tail)
         {
+            
             _head = null;
             _tail = null;
         }
-        else if (_tail is not null)
+        else
         {
-            _tail.Prev = null;
-            _tail = _tail.Next;
+            // remove the tail
+            _tail = _tail.Prev;
+            _tail!.Next = null;
         }
     }
 
@@ -128,7 +134,7 @@ public class LinkedList : IEnumerable<int>
     /// <summary>
     /// Remove the first node that contains 'value'.
     /// </summary>
-    public void Remove(int value)
+   public void Remove(int value)
     {
         Node? curr = _head;
 
@@ -136,23 +142,28 @@ public class LinkedList : IEnumerable<int>
         {
             if (curr.Data == value)
             {
-                if (curr == _head)
+                if (curr == _head && curr == _tail)
                 {
-                    RemoveHead();
+                    // Only one node in the list
+                    _head = null;
+                    _tail = null;
+                }
+                else if (curr == _head)
+                {
+                    RemoveHead(); // already handles head updates
                 }
                 else if (curr == _tail)
                 {
-                    RemoveTail(); 
+                    RemoveTail(); // already handles tail updates
                 }
                 else
                 {
-                    // Re-link the previous and next nodes to skip 'curr'
+                    // Re-link previous and next
                     curr.Prev!.Next = curr.Next;
                     curr.Next!.Prev = curr.Prev;
                 }
-                return; 
+                return;
             }
-
             curr = curr.Next;
         }
     }
