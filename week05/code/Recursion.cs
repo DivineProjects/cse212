@@ -112,9 +112,7 @@ public static class Recursion
             remember = new Dictionary<int, decimal>();
 
         // Base Cases
-        if (s < 0)
-            return 0;
-        if (s == 0)
+        if (s <= 0)
             return 0;
         if (s == 1)
             return 1;
